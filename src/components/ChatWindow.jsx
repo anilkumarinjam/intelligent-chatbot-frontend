@@ -3,7 +3,7 @@ import Message from "./Message";
 import PromptSuggestions from "./PromptSuggestions";
 import { sendQuery } from "../api";
 
-const ChatWindow = ({ onClose }) => {
+const ChatWindow = ({ onClose, onQueryResponse }) => {
   const [messages, setMessages] = useState([
     { type: "bot", text: "Hi! Ask me anything about your data." },
   ]);
@@ -29,6 +29,8 @@ const ChatWindow = ({ onClose }) => {
           chart: response.chart,
         },
       ]);
+      // Pass the response to parent component
+      onQueryResponse(response);
     } catch {
       setMessages((msgs) => [
         ...msgs,
