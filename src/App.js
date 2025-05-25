@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChatbotIcon from "./components/ChatbotIcon";
 import ChatWindow from "./components/ChatWindow";
 import DataDisplay from "./components/DataDisplay";
-import ThemeToggle from "./components/ThemeToggle";
 import Hero from "./sections/Hero";
 import "./styles/main.scss";
 
@@ -11,15 +10,10 @@ function App() {
   const [chatOpen, setChatOpen] = useState(true);
   const [queryResults, setQueryResults] = useState(null);
   const [chartData, setChartData] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark'; // Default to light if no saved theme
-  });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -46,10 +40,6 @@ function App() {
     setChartData(null);
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
-  };
-
   return (
     <motion.div 
       className="App"
@@ -57,7 +47,6 @@ function App() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* <ThemeToggle isDark={isDarkMode} onToggle={toggleTheme} /> */}
       <Hero />
       
       <AnimatePresence>
@@ -84,7 +73,6 @@ function App() {
               data={queryResults} 
               chart={chartData} 
               onClose={closeResults}
-              isDark={isDarkMode}
             />
           </>
         )}
@@ -101,7 +89,6 @@ function App() {
             <ChatWindow 
               onClose={() => setChatOpen(false)} 
               onQueryResponse={handleQueryResponse}
-              isDark={isDarkMode}
             />
           </motion.div>
         )}
