@@ -25,7 +25,7 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
       style={{
         width: '80vw',
         maxWidth: '1400px',
-        left: '20%',
+        left: '11%',
         transform: 'translate(-50%, -50%)'
       }}
     >
@@ -109,9 +109,9 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
                       layout={{
                         ...chart.layout,
                         autosize: true,
-                        height: 550,
-                        width: Math.min(window.innerWidth * 0.75, 1200),
-                        margin: { t: 40, b: 40, l: 60, r: 40 },
+                        height: 450,
+                        width: Math.min(window.innerWidth * 0.4, 1100),
+                        margin: { t: 40, b: 50, l: 60, r: 40 },
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
                         font: {
@@ -129,11 +129,19 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
                         },
                         xaxis: {
                           automargin: true,
-                          tickfont: { size: 12 }
+                          tickfont: { size: 12 },
+                          title: {
+                            text: chart.layout?.xaxis?.title?.text || 'X-Axis',
+                            font: { size: 14 }
+                          }
                         },
                         yaxis: {
                           automargin: true,
-                          tickfont: { size: 12 }
+                          tickfont: { size: 12 },
+                          title: {
+                            text: chart.layout?.yaxis?.title?.text || 'Y-Axis',
+                            font: { size: 14 }
+                          }
                         },
                         modebar: {
                           bgcolor: 'transparent',

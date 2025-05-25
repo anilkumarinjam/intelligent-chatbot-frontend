@@ -21,6 +21,18 @@ function App() {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+``
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChatOpen(true);
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleQueryResponse = (response) => {
     console.log("[DEBUG] handleQueryResponse response:", response);
     if (response.data) {
