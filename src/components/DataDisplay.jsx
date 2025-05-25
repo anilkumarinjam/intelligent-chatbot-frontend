@@ -32,17 +32,32 @@ const DataDisplay = ({ data, chart }) => {
             background: '#fff',
             borderRadius: '12px',
             boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-            padding: '1.5rem',
-            maxWidth: 900,
+            padding: '1rem',
+            width: '95%',
+            maxWidth: '800px',
             marginLeft: 'auto',
             marginRight: 'auto'
           }}
         >
           <Plot
             data={chart.data}
-            layout={chart.layout}
-            config={chart.config}
-            style={{ width: '100%' }}
+            layout={{
+              ...chart.layout,
+              autosize: true,
+              height: 400,
+              width: null,
+              margin: { t: 20, b: 30, l: 50, r: 20 },
+              paper_bgcolor: 'transparent',
+              plot_bgcolor: 'transparent'
+            }}
+            config={{
+              ...chart.config,
+              responsive: true,
+              displayModeBar: false,
+              scrollZoom: false,
+              modeBarButtonsToRemove: ['autoScale2d']
+            }}
+            style={{ width: '100%', height: '100%' }}
             useResizeHandler={true}
           />
         </div>
