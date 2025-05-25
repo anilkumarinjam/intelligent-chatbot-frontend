@@ -1,10 +1,7 @@
 import React from 'react';
+import Plot from 'react-plotly.js';
 
-const DataDisplay = ({ data }) => {
-  if (!data || !Array.isArray(data)) {
-    return null;
-  }
-
+const DataDisplay = ({ data, chart }) => {
   const headers = Object.keys(data[0]);
 
   return (
@@ -27,6 +24,29 @@ const DataDisplay = ({ data }) => {
           ))}
         </tbody>
       </table>
+      {chart && chart.data && chart.layout && (
+        <div
+          className="chart-container"
+          style={{
+            marginTop: '2rem',
+            background: '#fff',
+            borderRadius: '12px',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+            padding: '1.5rem',
+            maxWidth: 900,
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}
+        >
+          <Plot
+            data={chart.data}
+            layout={chart.layout}
+            config={chart.config}
+            style={{ width: '100%' }}
+            useResizeHandler={true}
+          />
+        </div>
+      )}
     </div>
   );
 };
