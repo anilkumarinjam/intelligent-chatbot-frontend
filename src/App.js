@@ -45,7 +45,7 @@ function App() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <ThemeToggle isDark={isDarkMode} onToggle={toggleTheme} />
+      {/* <ThemeToggle isDark={isDarkMode} onToggle={toggleTheme} /> */}
       <Hero />
       
       <AnimatePresence>
