@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/intelligent-chatbot-frontend/static/css/main.eb0cace0.css",
-    "main.js": "/intelligent-chatbot-frontend/static/js/main.fa644eef.js",
+    "main.css": "/intelligent-chatbot-frontend/static/css/main.b63ad9fa.css",
+    "main.js": "/intelligent-chatbot-frontend/static/js/main.1d4233e3.js",
     "static/js/453.a091d9cf.chunk.js": "/intelligent-chatbot-frontend/static/js/453.a091d9cf.chunk.js",
     "index.html": "/intelligent-chatbot-frontend/index.html",
-    "main.eb0cace0.css.map": "/intelligent-chatbot-frontend/static/css/main.eb0cace0.css.map",
-    "main.fa644eef.js.map": "/intelligent-chatbot-frontend/static/js/main.fa644eef.js.map",
+    "main.b63ad9fa.css.map": "/intelligent-chatbot-frontend/static/css/main.b63ad9fa.css.map",
+    "main.1d4233e3.js.map": "/intelligent-chatbot-frontend/static/js/main.1d4233e3.js.map",
     "453.a091d9cf.chunk.js.map": "/intelligent-chatbot-frontend/static/js/453.a091d9cf.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.eb0cace0.css",
-    "static/js/main.fa644eef.js"
+    "static/css/main.b63ad9fa.css",
+    "static/js/main.1d4233e3.js"
   ]
 }
