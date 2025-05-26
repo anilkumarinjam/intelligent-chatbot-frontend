@@ -1145,7 +1145,7 @@ body {
   pointer-events: auto;
   position: absolute;
   left: 0%;
-  bottom: 48px; // Open above the fab button
+  bottom: -30px; // Open above the fab button
   transform: translateX(-50%);
   min-width: 320px;
   max-width: 95vw;
@@ -1170,8 +1170,8 @@ body {
 .suggestions-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 0.7rem;
+  gap: 0rem;
+  margin-bottom: 0.3rem;
 }
 
 .close-suggestions-btn {

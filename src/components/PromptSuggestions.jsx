@@ -7,16 +7,32 @@ const prompts = [
     icon: "📊",
   },
   {
-    text: "What are the monthly revenues from SQL table 'orders'?",
-    icon: "💰",
+    text: "Show me total order amounts by customer from the orders table",
+    icon: "🧾",
   },
   {
-    text: "List customers from SQL table 'customers' in USA",
-    icon: "👥",
+    text: "List all customers aged above 30 from the customers table",
+    icon: "👴",
   },
   {
-    text: "Show me sales trends for the last 6 months",
-    icon: "📈",
+    text: "Find customers from Canada with orders over $200",
+    icon: "🇨🇦",
+  },
+  {
+    text: "Show average order amount by country",
+    icon: "🌎",
+  },
+  {
+    text: "List customers who placed orders in the last 3 months",
+    icon: "🕒",
+  },
+  {
+    text: "Display order counts grouped by order status",
+    icon: "📊",
+  },
+  {
+    text: "Show customers with no orders",
+    icon: "❌",
   },
 ];
 
@@ -60,7 +76,7 @@ const PromptSuggestions = ({ onSelect }) => {
               }}
             >
               {prompts.map((prompt, idx) => (
-                <motion.button
+                <motion.button  
                   key={idx}
                   className="prompt-button"
                   onClick={() => handleSelect(prompt.text)}
