@@ -1,19 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Plot from 'react-plotly.js';
 import LoadingSpinner from './LoadingSpinner';
 
-const DataDisplay = ({ data, chart, onClose, isDark }) => {
+const CHART_TYPES = [
+  { value: 'bar', label: 'Bar' },
+  { value: 'line', label: 'Line' },
+  { value: 'scatter', label: 'Scatter' },
+  { value: 'pie', label: 'Pie' }
+];
+
+function getNumericColumns(data) {
+  if (!data || !data.length) return [];
+  const sample = data[0];
+  return Object.keys(sample).filter(key => typeof sample[key] === 'number');
+}
+
+function getCategoricalColumns(data) {
+  if (!data || !data.length) return [];
+  const sample = data[0];
+  return Object.keys(sample).filter(key => typeof sample[key] === 'string' || typeof sample[key] === 'boolean');
+}
+
+const DataDisplay = ({ data, onClose, isDark }) => {
   const [activeTab, setActiveTab] = useState('table');
   const [isLoading, setIsLoading] = useState(false);
   const headers = data ? Object.keys(data[0]) : [];
 
+  // Find numeric and categorical columns
+  const numericColumns = useMemo(() => getNumericColumns(data), [data]);
+  const categoricalColumns = useMemo(() => getCategoricalColumns(data), [data]);
+
+  // Default chart type: bar if categorical+numeric, else scatter
+  const defaultChartType = categoricalColumns.length && numericColumns.length ? 'bar' : 'scatter';
+  const [chartType, setChartType] = useState(defaultChartType);
+  // Default x: first categorical or first header
+  const [xKey, setXKey] = useState(categoricalColumns[0] || headers[0]);
+  // Default y: first numeric or second header
+  const [yKey, setYKey] = useState(numericColumns[0] || headers[1]);
+
   const handleTabChange = (tab) => {
     setIsLoading(true);
     setActiveTab(tab);
-    // Simulate loading for smooth transition
     setTimeout(() => setIsLoading(false), 300);
   };
+
+  // Generate chart data based on selection
+  const chartData = useMemo(() => {
+    if (!data || !xKey || (!yKey && chartType !== 'pie')) return null;
+    if (chartType === 'pie') {
+      // Pie: xKey is label, yKey is value
+      return [{
+        type: 'pie',
+        labels: data.map(row => row[xKey]),
+        values: data.map(row => row[yKey]),
+        textinfo: 'label+percent',
+        hoverinfo: 'label+value+percent',
+        hole: 0.3
+      }];
+    }
+    // Bar, Line, Scatter: x and y
+    return [{
+      type: chartType,
+      x: data.map(row => row[xKey]),
+      y: data.map(row => row[yKey]),
+      mode: chartType === 'scatter' ? 'markers' : undefined,
+      marker: { color: 'var(--primary-color)' },
+      line: { color: 'var(--primary-color)' }
+    }];
+  }, [data, chartType, xKey, yKey]);
+
+  const chartLayout = useMemo(() => ({
+    autosize: true,
+    height: 450,
+    width: Math.min(window.innerWidth * 0.4, 1100),
+    margin: { t: 40, b: 50, l: 60, r: 40 },
+    paper_bgcolor: 'transparent',
+    plot_bgcolor: 'transparent',
+    font: {
+      family: 'Inter, sans-serif',
+      color: 'var(--text-color)',
+      size: 14
+    },
+    title: {
+      text: `${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`,
+      font: {
+        family: 'Inter, sans-serif',
+        size: 20,
+        color: 'var(--text-color)'
+      },
+      y: 0.95
+    },
+    xaxis: {
+      automargin: true,
+      tickfont: { size: 12 },
+      title: {
+        text: xKey || 'X-Axis',
+        font: { size: 14 }
+      }
+    },
+    yaxis: {
+      automargin: true,
+      tickfont: { size: 12 },
+      title: {
+        text: yKey || 'Y-Axis',
+        font: { size: 14 }
+      }
+    },
+    modebar: {
+      bgcolor: 'transparent',
+      color: isDark ? '#fff' : '#1e293b',
+      activecolor: 'var(--primary-color)'
+    }
+  }), [chartType, xKey, yKey, isDark]);
 
   return (
     <motion.div 
@@ -59,7 +158,8 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
           </motion.button>
         </div>
 
-        {chart && (
+        {/* Chart/Table view controls always shown if enough data */}
+        {data && data.length > 0 && (
           <div className="view-controls">
             <button 
               className={`tab-button ${activeTab === 'table' ? 'active' : ''}`}
@@ -70,9 +170,31 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
             <button 
               className={`tab-button ${activeTab === 'chart' ? 'active' : ''}`}
               onClick={() => handleTabChange('chart')}
+              disabled={headers.length < 2}
             >
               Chart View
             </button>
+            {activeTab === 'chart' && (
+              <>
+                <select value={chartType} onChange={e => setChartType(e.target.value)} style={{ marginLeft: 16 }}>
+                  {CHART_TYPES.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                <select value={xKey} onChange={e => setXKey(e.target.value)} style={{ marginLeft: 8 }}>
+                  {headers.map(h => (
+                    <option key={h} value={h}>{h}</option>
+                  ))}
+                </select>
+                {chartType !== 'pie' && (
+                  <select value={yKey} onChange={e => setYKey(e.target.value)} style={{ marginLeft: 8 }}>
+                    {headers.map(h => (
+                      <option key={h} value={h}>{h}</option>
+                    ))}
+                  </select>
+                )}
+              </>
+            )}
           </div>
         )}
 
@@ -89,7 +211,7 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
               </motion.div>
             ) : (
               <>
-                {chart && activeTab === 'chart' && (
+                {activeTab === 'chart' && chartData && (
                   <motion.div
                     className="chart-section"
                     initial={{ opacity: 0, y: 20 }}
@@ -105,50 +227,8 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
                     }}
                   >
                     <Plot
-                      data={chart.data}
-                      layout={{
-                        ...chart.layout,
-                        autosize: true,
-                        height: 450,
-                        width: Math.min(window.innerWidth * 0.4, 1100),
-                        margin: { t: 40, b: 50, l: 60, r: 40 },
-                        paper_bgcolor: 'transparent',
-                        plot_bgcolor: 'transparent',
-                        font: {
-                          family: 'Inter, sans-serif',
-                          color: 'var(--text-color)',
-                          size: 14
-                        },
-                        title: {
-                          font: {
-                            family: 'Inter, sans-serif',
-                            size: 20,
-                            color: 'var(--text-color)'
-                          },
-                          y: 0.95
-                        },
-                        xaxis: {
-                          automargin: true,
-                          tickfont: { size: 12 },
-                          title: {
-                            text: chart.layout?.xaxis?.title?.text || 'X-Axis',
-                            font: { size: 14 }
-                          }
-                        },
-                        yaxis: {
-                          automargin: true,
-                          tickfont: { size: 12 },
-                          title: {
-                            text: chart.layout?.yaxis?.title?.text || 'Y-Axis',
-                            font: { size: 14 }
-                          }
-                        },
-                        modebar: {
-                          bgcolor: 'transparent',
-                          color: isDark ? '#fff' : '#1e293b',
-                          activecolor: 'var(--primary-color)'
-                        }
-                      }}
+                      data={chartData}
+                      layout={chartLayout}
                       config={{
                         responsive: true,
                         displayModeBar: 'hover',
@@ -177,7 +257,7 @@ const DataDisplay = ({ data, chart, onClose, isDark }) => {
                   </motion.div>
                 )}
 
-                {(!chart || activeTab === 'table') && (
+                {(activeTab === 'table' || !chartData) && (
                   <motion.div
                     className="table-section"
                     initial={{ opacity: 0 }}

@@ -140,6 +140,7 @@ const ChatWindow = ({ onClose, onQueryResponse }) => {
         <div className="header-content">
           <h3>Data Assistant</h3>
           <span className="status-indicator">Online</span>
+          <span class name="feedback-button">Feedback</span>
         </div>
         <button 
           onClick={onClose} 
